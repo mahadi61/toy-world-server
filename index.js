@@ -53,6 +53,12 @@ async function run() {
         res.send(result);
     })
 
+    // toy added by email
+    app.get("/myToys/:email", async(req, res)=>{
+      console.log()
+      const myToy = await toyCollection.find({sellerEmail : req.params.email}).toArray();
+      res.send(myToy);
+    })
 
 
 
