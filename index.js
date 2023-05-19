@@ -1,16 +1,17 @@
 const express = require("express");
 const cors = require("cors");
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 require('dotenv').config()
-app.use(cors());
 const port = process.env.PORT || 5000;
 
+// middleware
+app.use(cors());
+app.use(express.json());
 
 
 
 
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2ev6cf0.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -27,8 +28,30 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const toyCollection = client.db("toyDB").collection("toyCar");
+
+    // get all toys
+    app.get("/toys", async(req, res)=>{
+        const toys = await  toyCollection.find().toArray();
+        res.send(toys);
+    })
 
 
+    // add a toy to database
+    app.post("/addToy", async(req, res)=>{
+      const toyInfo = req.body;
+      const result = await toyCollection.insertOne(toyInfo);
+      console.log(result);
+      res.send(result);
+    })
+
+    // single toy details using id
+    app.get("/toy/:id", async(req, res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await toyCollection.findOne(query);
+        res.send(result);
+    })
 
 
 
