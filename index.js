@@ -30,6 +30,17 @@ async function run() {
 
     const toyCollection = client.db("toyDB").collection("toyCar");
 
+
+   
+
+    app.get("/myToySort/:n", async (req, res) => {
+      const n = req.params.n;
+      const result = await toyCollection.find({}).sort({ price: n }).toArray();
+      res.send(result);
+    });
+
+
+
     // get all toys
     app.get("/toys", async(req, res)=>{
         const toys = await  toyCollection.find().limit(20).toArray();
@@ -41,7 +52,6 @@ async function run() {
       const subCategory = req.params.category;
 
       const result = await toyCollection.find({category: subCategory }).toArray()
-      console.log(result);
       res.send(result);
     })
 
@@ -75,7 +85,6 @@ async function run() {
     app.post("/addToy", async(req, res)=>{
       const toyInfo = req.body;
       const result = await toyCollection.insertOne(toyInfo);
-      console.log(result);
       res.send(result);
     })
 
