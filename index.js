@@ -6,14 +6,9 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 
 // middleware
-const corsConfig = {
-  origin: '',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
-}
-app.use(cors(corsConfig))
-app.options("", cors(corsConfig))
+
 app.use(express.json());
+app.use(cors());
 
 
 
@@ -61,9 +56,31 @@ async function run() {
 
     // toy added by email
     app.get("/myToys/:email", async(req, res)=>{
-      console.log()
       const myToy = await toyCollection.find({sellerEmail : req.params.email}).toArray();
       res.send(myToy);
+    })
+
+    // toy update
+    app.put("/updateToy/:id", async(req, res)=>{
+      const id = req.params.id;
+      const updateToyData = req.body;
+      console.log(updateToyData);
+      console.log(id);
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+
+      const updateDoc = {
+        $set: {
+          price: updateToyData.price,
+          quantity: updateToyData.quantity,
+          description: updateToyData.description
+        },
+      };
+
+      const result = await toyCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+
+
     })
 
 
