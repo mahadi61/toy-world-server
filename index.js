@@ -80,8 +80,17 @@ async function run() {
       const result = await toyCollection.updateOne(filter, updateDoc, options);
       res.send(result);
 
+    })
+
+    // delete toy data
+    app.delete("/deleteToy/:id", async(req, res)=>{
+        const id = req.params.id;
+        console.log(id);
+        
 
     })
+
+
 
 
 
