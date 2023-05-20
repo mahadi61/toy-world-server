@@ -33,7 +33,7 @@ async function run() {
 
     // get all toys
     app.get("/toys", async(req, res)=>{
-        const toys = await  toyCollection.find().toArray();
+        const toys = await  toyCollection.find().limit(20).toArray();
         res.send(toys);
     })
 
@@ -91,6 +91,11 @@ async function run() {
         res.send(result);
     })
 
+    // search by name
+    app.get("/toys/:text", async(req, res)=>{
+      const text = req.params.text;
+      console.log(text);
+    })
 
 
 
