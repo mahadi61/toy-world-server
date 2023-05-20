@@ -37,6 +37,15 @@ async function run() {
         res.send(toys);
     })
 
+    // get toy by category
+    app.get("/toys/:category", async(req, res)=>{
+      const subCategory = req.params.category;
+
+      const result = await toyCollection.find({category: subCategory }).toArray()
+      console.log(result);
+      res.send(result);
+    })
+
 
     // add a toy to database
     app.post("/addToy", async(req, res)=>{
@@ -64,8 +73,6 @@ async function run() {
     app.put("/updateToy/:id", async(req, res)=>{
       const id = req.params.id;
       const updateToyData = req.body;
-      console.log(updateToyData);
-      console.log(id);
       const filter = {_id: new ObjectId(id)};
       const options = { upsert: true };
 
