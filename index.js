@@ -87,14 +87,19 @@ async function run() {
         const id = req.params.id;
         const query = {_id : new ObjectId(id)}
         const result = await toyCollection.deleteOne(query);
-        console.log(result)
         res.send(result);
     })
 
     // search by name
     app.get("/toys/:text", async(req, res)=>{
       const text = req.params.text;
-      console.log(text);
+      const result = await toyCollection.find({
+        $or:[
+          {toyName : {$regex: text, $options: "i"}}
+        ]
+      }).toArray()
+
+      res.send(result);
     })
 
 
