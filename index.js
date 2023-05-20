@@ -6,7 +6,6 @@ require('dotenv').config()
 const port = process.env.PORT || 5000;
 
 // middleware
-
 app.use(express.json());
 app.use(cors());
 
@@ -46,6 +45,31 @@ async function run() {
       res.send(result);
     })
 
+      // single toy details using id
+      app.get("/toy/:id", async(req, res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await toyCollection.findOne(query);
+        res.send(result);
+      })
+
+     // toy added by email
+     app.get("/myToys/:email", async(req, res)=>{
+      const myToy = await toyCollection.find({sellerEmail : req.params.email}).toArray();
+      res.send(myToy);
+    })
+
+    // search by name
+    app.get("/toys/:text", async(req, res)=>{
+      const text = req.params.text;
+      const result = await toyCollection.find({
+        $or:[
+          {toyName : {$regex: text, $options: "i"}}
+        ]
+      }).toArray()
+
+      res.send(result);
+    })
 
     // add a toy to database
     app.post("/addToy", async(req, res)=>{
@@ -55,19 +79,9 @@ async function run() {
       res.send(result);
     })
 
-    // single toy details using id
-    app.get("/toy/:id", async(req, res)=>{
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)};
-        const result = await toyCollection.findOne(query);
-        res.send(result);
-    })
+   
 
-    // toy added by email
-    app.get("/myToys/:email", async(req, res)=>{
-      const myToy = await toyCollection.find({sellerEmail : req.params.email}).toArray();
-      res.send(myToy);
-    })
+   
 
     // toy update
     app.put("/updateToy/:id", async(req, res)=>{
@@ -97,17 +111,7 @@ async function run() {
         res.send(result);
     })
 
-    // search by name
-    app.get("/toys/:text", async(req, res)=>{
-      const text = req.params.text;
-      const result = await toyCollection.find({
-        $or:[
-          {toyName : {$regex: text, $options: "i"}}
-        ]
-      }).toArray()
-
-      res.send(result);
-    })
+    
 
 
 
