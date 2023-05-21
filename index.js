@@ -68,7 +68,6 @@ async function run() {
     // search by name
     app.get("/searchToys/:text", async(req, res)=>{
       const text = req.params.text;
-      console.log(text);
       const result = await toyCollection.find({
         $or:[
           {toyName : {$regex: text, $options: "i"}}
