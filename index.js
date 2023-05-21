@@ -26,10 +26,15 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-   
+   client.connect();
 
     const toyCollection = client.db("toyDB").collection("toyCar");
+
+    const indexKeys = {toyName: 1}
+    const indexOptions = {name: "toyName"}
+    const result = await toyCollection.createIndex(indexKeys, indexOptions);
     
+
 
 
     // get all toys
@@ -39,9 +44,8 @@ async function run() {
     })
 
     // get toy by category
-    app.get("/toys/:category", async(req, res)=>{
+    app.get("/toyCategory/:category", async(req, res)=>{
       const subCategory = req.params.category;
-
       const result = await toyCollection.find({category: subCategory }).toArray()
       res.send(result);
     })
@@ -62,8 +66,9 @@ async function run() {
     })
 
     // search by name
-    app.get("/toys/:text", async(req, res)=>{
+    app.get("/searchToys/:text", async(req, res)=>{
       const text = req.params.text;
+      console.log(text);
       const result = await toyCollection.find({
         $or:[
           {toyName : {$regex: text, $options: "i"}}
