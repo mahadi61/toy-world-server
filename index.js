@@ -29,16 +29,6 @@ async function run() {
    
 
     const toyCollection = client.db("toyDB").collection("toyCar");
-
-
-   
-// not work
-    app.get("/myToySort/:n", async (req, res) => {
-      const n = req.params.n;
-      const result = await toyCollection.find({}).sort({ price: n }).toArray();
-      res.send(result);
-    });
-
     
 
 
@@ -64,7 +54,6 @@ async function run() {
         res.send(result);
       })
 
-      // http://localhost:5000/myToys?email=mahadihasan8461@gmail.com&sort=1
      // toy added by email
      app.get("/myToys", async(req, res)=>{
       let query = {sellerEmail: req.query.email}
