@@ -32,13 +32,14 @@ async function run() {
 
 
    
-
+// not work
     app.get("/myToySort/:n", async (req, res) => {
       const n = req.params.n;
       const result = await toyCollection.find({}).sort({ price: n }).toArray();
       res.send(result);
     });
 
+    
 
 
     // get all toys
@@ -63,9 +64,11 @@ async function run() {
         res.send(result);
       })
 
+      // http://localhost:5000/myToys?email=mahadihasan8461@gmail.com&sort=1
      // toy added by email
-     app.get("/myToys/:email", async(req, res)=>{
-      const myToy = await toyCollection.find({sellerEmail : req.params.email}).toArray();
+     app.get("/myToys", async(req, res)=>{
+      let query = {sellerEmail: req.query.email}
+      const myToy = await toyCollection.find(query).sort({price: Number(req.query.sort)}).toArray();
       res.send(myToy);
     })
 
